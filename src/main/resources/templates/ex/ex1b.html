@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--th:each="str:${list}": Thymeleaf의 반복 속성으로, list라는 속성에 있는 데이터를 반복합니다. 각 반복에서 현재 요소는 str이라는 변수에 저장됩니다.-->
+<!--th:text="${str}": 현재 반복 요소인 str 변수의 값을 출력합니다. 이렇게 하면 각 리스트 아이템에 있는 문자열이 출력됩니다.-->
+<ul>
+    <li th:each="str:${list}" th:text="${str}"></li>
+</ul>
+
+<!--<th:block>: Thymeleaf에서는 반복을 수행하기 위해 HTML에 직접 렌더링되지 않는 <th:block> 태그를 사용합니다. 이 태그를 사용하여 HTML 코드를 그룹화하고 반복을 적용할 수 있습니다.-->
+<ul>
+    <th:block th:each="str:${list}">
+        <li th:text="${str}"></li>
+                <hr>
+        <li>[[${str}]]</li>
+                <hr>
+    </th:block>
+</ul>
+
+
+<ul>
+    <!--  index  -->
+    <li th:each="str, status:${list}">
+        [[${status.index}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  count  -->
+    <li th:each="str, status:${list}">
+        [[${status.count}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  size, list의 크기  -->
+    <li th:each="str, status:${list}">
+        [[${status.size}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  first, 처음 요소만 true  -->
+    <li th:each="str, status:${list}">
+        [[${status.first}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  last, 마지막 요소만 true  -->
+    <li th:each="str, status:${list}">
+        [[${status.last}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  odd, 홀수 요소만 true  -->
+    <li th:each="str, status:${list}">
+        [[${status.odd}]] -- [[${str}]]
+    </li>
+    <hr>
+
+    <!--  even, 짝수 요소만 true  -->
+    <li th:each="str, status:${list}">
+        [[${status.even}]] -- [[${str}]]
+    </li>
+
+</ul>
+
+<ul>
+    <li th:each="str,status: ${list}">
+        <span th:if="${status.odd}"> ODD -- [[${str}]]</span>
+        <span th:unless="${status.odd}"> EVEN -- [[${str}]]</span>
+    </li>
+</ul>
+
+</body>
+</html>
