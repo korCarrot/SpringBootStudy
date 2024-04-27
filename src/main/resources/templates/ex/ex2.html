@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--@{/ }만으로 컨트롤러 경로 연결 가능.-->
+<a th:href="@{/hello}">Go to /hello</a>
+<hr>
+
+<!--쿼리스트링 : ()안에다 키=값 설정.-->
+<a th:href="@{/hello(name='AAA', age=16)}">Go to /hello</a>
+
+<hr>
+
+<!--한글은 자동으로 인코딩이 된다. 띄어쓰기해도 되네.-->
+<a th:href="@{/hello(name='한글 처리', age=16)}">Go to /hello</a>
+
+<hr>
+
+<!--배열 (,가 에러로 나와도 정상동작)-->
+<a th:href="@{/hello(types=${ {'AA','BB','CC'} },age=16)}">Go to /hello</a>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:text="${list}"></div>
+<div th:text="${map}"></div>
+<div th:text="${dto}"></div>
+
+<!-- th:inline  : th:inline은 템플릿 안에서 자바스크립트 또는 CSS 코드를 사용할 때 사용-->
+<script th:inline="javascript">
+
+    const list = [[${list}]]
+
+    const map = [[${map}]]
+
+    const dto = [[${dto}]]
+
+    console.log(list)
+    console.log(map)
+    console.log(dto)
+
+</script>
+
+<!--
+(자바스크립트로 표현될 때)
+
+    const list = ["Data1","Data2","Data3","Data4","Data5","Data6","Data7","Data8","Data9"]
+
+    const map = {"A":"AAAA","B":"BBBB"}
+
+    const dto = {"p1":"Value -- p1","p2":"Value -- p2","p3":"Value -- p3"}
+
+    console.log(list)
+    console.log(map)
+    console.log(dto)
+
+-->
+
+</body>
+</html>

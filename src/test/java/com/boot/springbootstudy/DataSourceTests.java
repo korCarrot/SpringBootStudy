@@ -1,2 +1,46 @@
-package com.boot.springbootstudy;public class DataSourceTests {
+package com.boot.springbootstudy;
+
+import lombok.Cleanup;
+import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+@SpringBootTest
+@Log4j2
+public class DataSourceTests {
+
+//    DataSource Sql
+    @Autowired
+    private DataSource dataSource;
+
+    @Test
+    public void testConnection() throws SQLException {
+
+    //  @Cleanup : 자동으로 close() 메서드를 호출하여 리소스를 정리하는 데 사용
+        @Cleanup
+        Connection con =dataSource.getConnection();
+        log.info(con);
+
+        //Assertions.assertNotNull()
+        // : 주어진 객체가 null이 아님을 검증하기 위해 사용. null이면 AssertionError를 발생.
+        Assertions.assertNotNull(con);
+    }
+
+//    @Test
+//    public void testNotNull() {
+//        String str = "Hello";
+//        Assertions.assertNotNull(str);
+//    }
+//
+//    @Test
+//    public void testNotNull() {
+//        String str = null;
+//        Assertions.assertNotNull(str);
+//    }
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout1.html}">
+<!--네임스페이스 밑에 layout:decorate="~{layout/layout1.html}"를 통해
+    불러오고자 하는 layout 파일 설정.-->
+
+<!-- layout:decorate는 해당 페이지의 내용을 전부 가져온다.
+     fragment로 지정한 부분은 제외.
+     fragment로 지정한 부분은 불러와서 넣고자 하는 내용을 새로 작성해주는 것.-->
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 문자열 배열은 객체로 나간다.
+${arr} <- 문자 그대로 ${arr}
+[[${arr}]] <- 객체로 [Ljava.lang.String;@39768d7e
+
+- 타임리프문을 작성해도 객체로 나간다 -
+<th:block th:text="${arr}"></th:block>
+<h4 th:text="${arr}"></h4>
+
+밑에 '배열'을 자바스크립트로 받아보는 예제있음.
+-->
+
+
+<div layout:fragment="content">
+
+    <h1>ex3.html</h1>
+
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    const arr = [[${arr}]]
+    // const arr = ["AAA","BBB","CCC"]로 나타남.
+
+</script>
+
+
+<!-- th:replace를 직접 선언하고 사용할 수도 있다. -->
+
+<!--<div th:replace="~{layout/layout1} :: content">-->
+<!--</div>-->
+
+</body>
+</html>

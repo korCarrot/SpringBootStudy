@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 타임리프문은 네임스페이스 작성
+     태그 안에 작성해야함(div, h1 등 / th:blcok문 참고)-->
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+<!--Thymeleaf의 표현식-->
+<h4>[[${list}]]</h4>
+<hr>
+<h4 th:text="${list}"></h4>
+<hr>
+<h4 th:text="${list[0]}"></h4>
+
+<!-- th:with : 임시로 변수 선언-->
+<!-- 숫자를 할당하는 변수 선언-->
+<div th:with="num1=${10}, num2=${20}">
+    <h4 th:text="${num1+num2}"></h4>
+</div>
+
+<!-- 문자열 할당하는 변수 선언-->
+<div th:with="name=${'hong'}">
+    <h4 th:text="${name}"></h4>
+</div>
+
+<!-- 주의 : model에 담긴 값이 있으면 그 값이 나간다. -->
+<div th:with="str2=${list}">
+    <h4 th:text="${str2}"></h4>
+</div>
+
 </body>
 </html>

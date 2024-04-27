@@ -1,4 +1,6 @@
 plugins {
+    //org.springframework.boot' 플러그인은 Spring Boot 애플리케이션을 빌드하고 실행하는 데 필요한 기능을 제공
+    //io.spring.dependency-management' 플러그인은 Spring 프로젝트의 의존성 관리를 간편하게 해주는 기능을 제공
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
@@ -7,31 +9,50 @@ plugins {
 group = 'com.boot'
 version = '0.0.1-SNAPSHOT'
 
+// 프로젝트의 Java 소스 코드의 버전
 java {
     sourceCompatibility = '17'
 }
 
+//configurations 블록에서는 필요한 의존성을 정의
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
 
+//repositories 블록은 프로젝트에서 의존성을 가져올 Maven 저장소를 정의합니다. 여기서는 Maven 중앙 저장소만 사용하도록 설정
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    //thymeleaf layout
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+
+    //devTools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+
+
+    //MariaDB
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
 }
 
+// JUnit 테스트 플랫폼을 사용
 tasks.named('test') {
     useJUnitPlatform()
 }
