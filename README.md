@@ -9,13 +9,17 @@
 3. 타임리프 레이아웃 사용. `layout:decorate="~{불러오고자 하는 layout 파일 위치}"` / `layout:fragment`
 
 
+
+
 [SpringBoot JPA]
 스트링부트_JPA
 
-*'자바로 영속 영역을 처리하는 API', '객체 지향으로 구성한 시스템을 관계형 데이터베이스에 매핑'
-@Entity, @ID, @GeneratedValue(strategy = GenerationType.IDENTITY), @Column(length,nullable) / @EnableJpaAuditing / @MappedSuperclass,  @EntityListeners(value = {AuditingEntityListener.class}), @CreatedDate, @LastModifiedDate
+* '자바로 영속 영역을 처리하는 API', '객체 지향으로 구성한 시스템을 관계형 데이터베이스에 매핑'
+@Entity, @ID, @GeneratedValue(strategy = GenerationType.IDENTITY), @Column(length,nullable)
+/ @EnableJpaAuditing
+/ @MappedSuperclass,  @EntityListeners(value = {AuditingEntityListener.class}), @CreatedDate, @LastModifiedDate
 
-*JpaRepository<T, ID>
+* JpaRepository<T, ID>
 save(), findById(), deleteById()
 orElseThrow()
 
