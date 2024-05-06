@@ -11,13 +11,14 @@
 
 [SpringBoot JPA]
 스트링부트_JPA
-'자바로 영속 영역을 처리하는 API', '객체 지향으로 구성한 시스템을 관계형 데이터베이스에 매핑'
+
+*'자바로 영속 영역을 처리하는 API', '객체 지향으로 구성한 시스템을 관계형 데이터베이스에 매핑'
 @Entity, @ID, @GeneratedValue(strategy = GenerationType.IDENTITY), @Column(length,nullable) / @EnableJpaAuditing / @MappedSuperclass,  @EntityListeners(value = {AuditingEntityListener.class}), @CreatedDate, @LastModifiedDate
 
 *JpaRepository<T, ID>
 save(), findById(), deleteById()
 orElseThrow()
 
-<페이징 처리>
+* <페이징 처리>
 리턴 타입 Page<T> (자동으로 count 처리) - Pageable 인터페이스 - PageRequest.of(페이지 번호, 사이즈, 정렬 조건, 속성...)
 findAll(), findAll(Pageable)
