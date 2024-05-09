@@ -113,4 +113,11 @@ public class BoardRepositoryTests {
         List<Board> result = boardRepository.findAll();
         log.info(result);
     }
+
+    @Test
+    public void getTime(){
+        String time =boardRepository.getTime();
+        log.info("JPQL테스트: " + time);
+    }
+
 }

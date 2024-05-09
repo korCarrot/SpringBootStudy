@@ -1,7 +1,8 @@
 package com.boot.springbootstudy.domain;
 
-import jakarta.persistence.*;
 import lombok.*;
+
+import javax.persistence.*;
 
 //@Entity 애너테이션은 이 클래스가 데이터베이스의 테이블과 매핑되는 엔티티 클래스임을 나타냅니다. 즉, 이 클래스의 객체는 데이터베이스 테이블의 레코드에 해당합니다.
 //테이블의 레코드는 데이터베이스에서 하나의 행(row)에 해당하는 정보를 의미합니다. 관계형 데이터베이스에서 테이블은 행과 열의 형태로 데이터를 구조화한 것이며, 각 행은 특정한 데이터를 나타냅니다.

@@ -1,8 +1,6 @@
 package com.boot.springbootstudy.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,6 +8,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 //LocalDate: 이 클래스는 연도, 월, 일을 나타내는데 사용됩니다. 시간 정보는 포함되지 않습니다. 즉, 특정 날짜를 나타내는 데 사용됩니다.
 //LocalDateTime: 이 클래스는 연도, 월, 일, 시, 분, 초 등을 나타내는 데 사용됩니다. 즉, 특정 날짜와 시간을 모두 포함합니다.
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 //@MappedSuperclass:이 어노테이션은 부모 클래스가 하위 엔티티 클래스들에게 매핑 정보를 제공하기 위해 사용됩니다.
