@@ -85,6 +85,7 @@ public class BoardRepositoryTests {
 //   PageRequest.of(페이지 번호, 사이즈):       페이지 번호는 0부터
 //   PageRequest.of(페이지 번호, 사이즈, sort):         정렬 조건 추가
 //   PageRequest.of(페이지 번호, 사이즈, sort.direction, 속성...): 정렬 방향과 여러 속성 지정
+//   Pageable 객체는 페이지네이션 정보를 포함하고 있습니다. 이 정보는 현재 페이지 번호, 페이지당 항목 수, 정렬 정보 등을 포함
     @Test
     public void testPaging(){
 
@@ -120,4 +121,40 @@ public class BoardRepositoryTests {
         log.info("JPQL테스트: " + time);
     }
 
+// BoardSearch인터페이스와 연동한 상태에서 boardRepository 실행 가능.
+    @Test
+    public void testSearch1(){
+
+        //2page order by bno desc
+        Pageable pageable=PageRequest.of(1,10,Sort.by("bno").descending());
+        boardRepository.search1(pageable);
+    }
+
+// 검색 조건들 설정 후 키워드 검색
+    @Test
+    public void testSearchAll(){
+
+        String[] types = {"t", "c", "w"};
+
+        String keyword = "1";
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        //result = 데이터 목록 + 페이지 정보 + 전체 개수
+        Page<Board> result = boardRepository.searchAll(types, keyword, pageable);
+
+        //total pages
+        log.info("total pages: " + result.getTotalPages());
+
+        //page size
+        log.info("page size: " + result.getSize());
+
+        //page number
+        log.info("page number: " + result.getNumber());
+
+        //prev : next
+        log.info("이전 페이지: " + result.hasPrevious() + ": " + "다음 페이지: " + result.hasNext());
+
+        result.getContent().forEach( board -> log.info(board));
+    }
 }

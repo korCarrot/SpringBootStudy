@@ -24,9 +24,10 @@ group = 'com.boot'
 version = '0.0.1-SNAPSHOT'
 
 // 프로젝트의 Java 소스 코드의 버전
-java {
-    sourceCompatibility = '17'
-}
+//java {
+//    sourceCompatibility = '17'
+//}
+sourceCompatibility = '11'
 
 //configurations 블록에서는 필요한 의존성을 정의
 configurations {
