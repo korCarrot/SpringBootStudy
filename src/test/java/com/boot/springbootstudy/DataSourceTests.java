@@ -15,6 +15,8 @@ import java.sql.SQLException;
 @Log4j2
 public class DataSourceTests {
 
+    //객체 주입 방식1(필드 주입) @Autowired
+    //객체 주입 방식2(생성자 주입) @Autowired 생략, 필드에 final 추가, 클래스에  @RequiredArgsConstructor 추가
 //    DataSource Sql
     @Autowired
     private DataSource dataSource;
