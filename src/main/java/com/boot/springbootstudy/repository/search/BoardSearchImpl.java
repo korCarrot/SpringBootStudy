@@ -20,6 +20,7 @@
             super(Board.class);
         }
 
+//      조회
         @Override
         public Page<Board> search1(Pageable pageable) {
 
@@ -62,6 +63,7 @@
             return null;
         }
 
+//      검색조건 조회
         @Override
         public Page<Board> searchAll(String[] types, String keyword, Pageable pageable) {
 

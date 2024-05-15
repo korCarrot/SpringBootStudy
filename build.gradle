@@ -85,6 +85,9 @@ dependencies {
     //MariaDB
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 // JUnit 테스트 플랫폼을 사용
