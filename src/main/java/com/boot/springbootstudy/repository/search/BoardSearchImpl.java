@@ -2,6 +2,8 @@
 
     import com.boot.springbootstudy.domain.Board;
     import com.boot.springbootstudy.domain.QBoard;
+    import com.boot.springbootstudy.domain.QReply;
+    import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
     import com.querydsl.core.BooleanBuilder;
     import com.querydsl.jpa.JPQLQuery;
     import org.springframework.data.domain.Page;
@@ -109,5 +111,24 @@
             return new PageImpl<Board>(list, pageable, count);
         }
 
+        @Override
+        public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
 
+        QBoard board = QBoard.board;
+        QReply reply = QReply.reply;
+
+        JPQLQuery<Board> query = from(board);
+
+        //on : 조인 조건을 설정    /   reply 엔티티의 board 속성과 board 엔티티가 같은 값을 가질 때 조인
+        query.leftJoin(reply).on(reply.board.eq(board));
+
+        query.groupBy(board);   //결과를 게시물별로 그룹화
+
+            return null;
+        }
+
+        //Inner Join : 교집합
+        //left join : 왼쪽 기준 전부 select (오른쪽에 없는건 null로 표시)       /       왼쪽만 보려면 where B.ID(조인한 공통점이라 할 때) IS NULL
+        //right join : (left join과 동일. where조건에서 왼쪽에 있는 테이블로만 바꾸면 됨.)
+        //Outer join : 합집합      /       교집합 부분 제외하고 싶으면 where A.ID IS NULL OR B.ID IS NULL
     }
