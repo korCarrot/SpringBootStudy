@@ -1,0 +1,509 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Varela+Round&display=swap');
+/* 여기부터 책의 코드를 작성해주세요 */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* a, a:link, a:visited{
+  color:inherit;
+  text-decoration:none;
+} */
+
+li{
+    list-style: none;
+}
+
+.container{
+    width:1140px;
+    margin:0 auto;
+  }
+
+header{
+    position:fixed;
+    color:white;
+    top:0;
+    z-index:1;
+    width: 100%;
+    padding: 1rem;
+}
+
+header .container{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    width: 100%;
+}
+
+header nav ul{
+    display: flex;
+}
+header nav ul li{
+    padding:10px;
+}
+
+header button{
+    background: transparent;            /* transparent는 배경을 투명하게 만든다 */
+    border: 0;                          /* 테두리 */
+    cursor: pointer;                    /* 마우스 포인터의 모양 */
+    color: white;
+}
+
+header h1 button{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+header nav ul li button{
+    font-size: 1.2rem;
+}
+/* End header.css */
+/* main.css */
+
+main{
+    width: 100%;
+    height: 100vh;  /*vw = viewport width       /        vh = viewport height*/
+    color: white;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url(../images/me.jpg) center center;
+    background-size:cover;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    text-align: center;
+}
+
+main h4{
+    font-size: 2rem;
+}
+
+main h2{
+    font-size: 3.5rem;
+    margin: 2rem 0;
+    letter-spacing: 3px;    /*글자 사이의 간격은 letter-spacing으로, 단어 사이의 간격은 word-spacing*/
+    font-family: 'Varela Round', sans-serif;    /* 웹폰트 추가  /   첫번째 글꼴이 없는 경우 다음 글꼴을 사용 */
+}
+
+main p{
+    max-width: 500px; /* 최대로 커질 수 있는 크기 */
+    margin:0 auto;
+    font-size: 1.8rem;
+}
+
+main button.download{
+    background-color: transparent;
+    border: 3px solid white;
+    border-radius: 20px;
+    padding: 1rem 2rem;
+    margin-top: 3rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+main button.mouse{
+    background-color:transparent;
+    border:none;
+    color:white;
+    font-size:2rem;
+    position:absolute;
+    bottom:1rem;
+    left:50%;
+    transform:translateX(-50%);
+    animation:upDown 1s ease-in-out infinite;
+    cursor:pointer;
+  }
+
+@keyframes updown{
+  0%{
+    bottom:1rem;
+  }  
+  50%{
+    bottom: 1.5rem;
+  }
+  100%{
+    bottom:1rem;
+  }
+} /* keyframes는 css의 animation */
+
+main h2 span::after{
+    content: "";
+    height: 40px;
+    width: 3px;
+    background-color: #fff;
+    display: inline-block;
+    animation: blink .7s ease-in-out infinite; /* 깜빡이는 효과 / 7초 / 보통-느리게 / 반복 */
+}
+/* ease: 천천-빠름-천천
+ease-in: 보통-빠르게
+ease-out: 보통-느리게
+ease-in-out: 천천-보통-천천(ease와 그래프 모양이 같은데, 기울기 변화 속도는 다르다) */
+
+@keyframes blink{
+    0%{
+        opacity: 1;             /* opacity로 요소의 투명도를 정할 수 있습니다. */
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
+/* about_me.css */
+section{
+    font-family: 'Poppins', sans-serif;
+    padding: 5rem 0;
+}
+
+section:nth-child(2n){
+    background-color: #f8f8f8;
+}
+
+section .title{
+margin-bottom: 3rem;
+}
+
+section .title h4{
+    font-size: 1.35rem;
+    color: #ed4848;
+    position: relative;
+}
+
+section .title h2{
+    font-size: 3.5rem;
+}
+
+section .title p{
+    font-size: 1.15rem;
+} /* section .title p가 없는것같은데.. */
+
+section .about-self::after{
+    content:"";
+    clear: both;
+    display: block;
+}
+
+section .about-self .left{
+    width: 50%;
+    float: left;
+}
+
+section .about-self .left img{
+    max-width: 100%;
+}
+
+section .about-self .right{
+    width: 50%;
+    float: left;
+    padding: 0 2rem;
+}
+
+section .about-self .right h3{
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+}
+
+section .about-self .right h3 strong{
+    color: #ed4848;
+}
+
+section .about-self .right p{
+    font-size:1.15rem;
+    margin:1rem 0;
+  }
+  section .about-self .right .social a{
+    font-size:2.5rem;
+    margin-right:0.2rem;
+    color: black;
+  }
+/* End about_me.css */
+/* what_i_do.css */
+  section .do-me .do-inner{
+    background-color:#fff;
+    width:30%;
+    padding:2rem; 
+    float:left;
+    margin-right:5%;
+    cursor:pointer;
+  }
+
+  section .do-me .do-inner:last-child{
+    margin-right:0;
+  }
+  section .do-me .do-inner .icon i{
+    font-size:2.5rem;
+    color:#ff6a6a;
+  }
+
+  section .do-me .do-inner .content h3{
+    font-size:2rem;
+    margin:1rem 0;
+  }
+  section .do-me .do-inner .content p{
+    font-size:1.15rem;
+  }
+  section .do-me .do-inner:hover{
+    background-color:lightcoral;
+    color:white;
+  }
+  section .do-me .do-inner:hover i{
+    color:white;
+  }
+  /* background.css */
+  .bg{
+    background:url('../images/work.jpg') center center;
+    background-size:cover;
+    background-attachment:fixed;
+    height:650px;
+  }
+  /* End background.css */
+  /* portfolio.css */
+ .portfolio::after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+ .portfolio .portfolio-inner{
+    width:30%;
+    margin-right:5%;
+    padding:1rem 1rem 1.5rem 1rem;
+    float:left;
+    background-color:#f8f8f8;
+    border:1px solid #ccc;
+    margin-bottom:3rem;
+  }
+  .portfolio .portfolio-inner:nth-child(3n){
+    margin-right:0;
+ }
+
+ .portfolio .portfolio-inner img{
+    width:100%;
+    display:block;
+  }
+  .portfolio .portfolio-inner strong{
+    color:#ff6a6a;
+    margin:0.5rem 0;
+    display:block;
+  }
+.portfolio .portfolio-inner h3{
+    font-size:1.75rem;
+}
+/* End portfolio.css */
+/* contact_with_me.css */
+
+.contact .contact-me::after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+  .contact .contact-me .left{
+    width:30%;
+    float:left;
+  }
+  .contact .contact-me .right{
+    float:left;
+    width:65%;
+    margin-left:5%;
+    margin-bottom:2rem;
+    border:1px solid #ccc;
+    padding:1rem;
+  }
+
+.contact .contact-me .left .card{
+  border:1px solid #ccc;
+  padding:1rem;
+  display:flex;
+  align-items:center;
+  margin-bottom:1.25rem;
+}
+
+section.contact .contact-me .left .card .icon i{
+    font-size:2rem;
+    margin-right:15px;
+  }
+
+  /* form-group 사이 간격 */
+.contact .contact-me .right .form-group{
+    margin-bottom:1.25rem;
+  }
+  /* label 태그가 인라인 성격. 외부 여백 적용하려면 blcok으로 변경 */
+  .contact .contact-me .right .form-group label{
+    display:block;
+    margin-bottom:0.85rem;
+  }
+ .contact .contact-me .right .form-group input{
+    padding:0.625rem;
+    width:100%;
+    outline:none;
+    border:1px solid #ccc;
+    border-radius:10px;
+  }
+ .contact .contact-me .right .form-group input:focus{
+    border:1px solid #ffaf63;
+    box-shadow:0 0 10px #ffaf63;
+  }
+  /* box shadow 오른쪽 아래 블러정도 블러크기 */
+  .contact .contact-me .right .form-group textarea{
+    height:300px;
+    width:100%;
+    resize:none;
+    border:1px solid #ccc;
+    border-radius:10px;
+  }
+  /* resize. textarea 태그는 기본값으로 사용자가 임의 사이즈를 변경 가능 따라서 resize 태그를 통해 방문자가 임의로 변경하지 못하도록 막는 것*/
+  .contact .contact-me .right .form-group textarea:focus{
+    outline:none;
+    border:1px solid #ffaf63;
+    box-shadow:0 0 10px #ffaf63;
+  }
+
+  /* Contact 제출 버튼 */
+section.contact .contact-me .right button{
+    width:100%;
+    padding:1rem;
+    background-color:#f78b00;
+    border:none;
+    color:white;
+  }
+
+  /* End contact_with_me.css */
+  
+/* media.css */
+@media screen and (max-width: 1140px){
+
+    main .container{
+      width: 992px;
+    }
+    
+    .container{
+      width:600px;
+    }
+  
+   .about-self .left{
+      width:100%;
+      margin-bottom: 1.5rem;
+    }
+    .about-self .right{
+      width:100%;
+      padding:0;
+    }
+  
+    .do-me .do-inner{
+      width:48%;
+      margin-bottom: 1.5rem;
+      margin-right: 0;
+    }
+  
+    .do-me .do-inner:nth-child(2n+1){
+      margin-right:4%;
+    }
+    
+    .portfolio-me .portfolio-inner{
+      width:48%;
+      margin-right: 0;
+    }
+  
+   .portfolio-me .portfolio-inner:nth-child(2n+1){
+      margin-right:4%;
+    }
+  
+   .contact .contact-me .left{
+      width:100%; 
+    }
+    
+   .contact .contact-me .right{
+      width:100%;
+      margin-left: 0; 
+    }
+  }
+
+   @media (max-width: 992px){
+    html{
+      font-size: 14px;
+    }
+    main .container{
+      width: 768px;
+    }
+
+    .portfolio-me .portfolio-inner{
+      width:100%;
+    } 
+  }
+
+  @media (max-width: 768px){
+    html{
+      font-size: 13px;
+    }
+    
+    main .container{
+      width: 576px;
+    }
+  
+   .container{
+      width:400px;
+    }
+  
+    .do-me .do-inner{
+      width:100%; /* 48% -> 100% */
+      margin-right: 0; /* margin 초기화 */
+    }
+  }
+
+  @media (max-width: 576px){
+  
+    html{
+      font-size: 12px;
+    }
+  
+    main .container{
+      width: 400px;
+    }
+  
+    .container{
+      width:360px;
+    }
+  }
+  
+  @media (max-width: 400px){
+    
+    html{
+      font-size: 11px;
+    }
+    main .container{
+      width: 320px;
+    }
+  
+    main h4{
+      font-size: 1.5rem;
+    }
+    section .container{
+      width: 320px;
+    }
+    section .title h2{
+      font-size: 3rem;
+    }
+  }
+  /* End media.css  미디어 크기별 화면 */
+
+
+/* 자바스크립트 -> header.active */
+  header.active{
+    background-color:rgba(0,0,0);
+    animation:fadeIn 0.5s ease-in-out;
+  /* ease-in-out : 애니메이션의 타이밍 함수를 지정합니다. 애니메이션의 시작과 끝 부분을 부드럽게 만듭니다.
+     fadeIn 애니메이션이 적용되어, 요소의 투명도가 0에서 1로 변화합니다. 이 과정은 0.5초 동안 부드럽게 진행됩니다(ease-in-out).
+  */
+  }
+
+   @keyframes fadeIn{
+    0%{
+      opacity:0;
+    /*    애니메이션의 시작 상태를 정의합니다.
+          0% : 애니메이션의 시작 시점 (0% 지점)입니다.
+          opacity: 0; : 시작할 때 요소의 불투명도가 0입니다. (완전히 투명) */
+    }
+    100%{
+      opacity:1;
+    /*    애니메이션의 끝 상태를 정의합니다.
+          100%: 애니메이션의 끝 시점 (100% 지점)입니다.
+          opacity: 1;: 끝날 때 요소의 불투명도가 1입니다. (완전히 불투명) */
+    }
+  }
