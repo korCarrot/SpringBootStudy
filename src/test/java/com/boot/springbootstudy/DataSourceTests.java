@@ -17,6 +17,10 @@ public class DataSourceTests {
 
     //객체 주입 방식1(필드 주입) @Autowired
     //객체 주입 방식2(생성자 주입) @Autowired 생략, 필드에 final 추가, 클래스에  @RequiredArgsConstructor 추가
+
+    //* JUnit은 기본적으로 매개변수가 없는 기본 생성자를 사용한다.
+    //하지만 Lombok의 @RequiredArgsConstructor는 final 필드를 초기화하는 생성자를 추가하므로 Junit 테스트 환경에서는 @Autowired를 사용해야만 한다.
+
 //    DataSource Sql
     @Autowired
     private DataSource dataSource;

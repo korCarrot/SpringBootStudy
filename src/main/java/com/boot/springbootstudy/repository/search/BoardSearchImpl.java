@@ -5,6 +5,7 @@
     import com.boot.springbootstudy.domain.QReply;
     import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
     import com.querydsl.core.BooleanBuilder;
+    import com.querydsl.core.types.Projections;
     import com.querydsl.jpa.JPQLQuery;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageImpl;
@@ -111,6 +112,7 @@
             return new PageImpl<Board>(list, pageable, count);
         }
 
+        //댓글 개수와 함께 게시글 검색
         @Override
         public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
 
@@ -119,16 +121,59 @@
 
         JPQLQuery<Board> query = from(board);
 
+        //board를 기준으로 reply와 왼쪽 조인을 수행
         //on : 조인 조건을 설정    /   reply 엔티티의 board 속성과 board 엔티티가 같은 값을 가질 때 조인
         query.leftJoin(reply).on(reply.board.eq(board));
 
         query.groupBy(board);   //결과를 게시물별로 그룹화
 
-            return null;
+            if ( (types != null && types.length > 0) && keyword != null) {
+
+                BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+                for (String type : types) {
+
+                    switch (type) {
+
+                        case "t":
+                            booleanBuilder.or(board.title.contains(keyword));
+                            break;
+
+                        case "c":
+                            booleanBuilder.or(board.content.contains(keyword));
+                            break;
+
+                        case "w":
+                            booleanBuilder.or(board.writer.contains(keyword));
+                            break;
+                    }
+                } //end for
+                query.where(booleanBuilder);
+            }
+
+            //bno > 0
+            query.where(board.bno.gt(0L));
+
+
+        JPQLQuery<BoardListReplyCountDTO> dtoQuery = query.select(Projections.bean(BoardListReplyCountDTO.class,
+                                        board.bno,
+                                        board.title,
+                                        board.writer,
+                                        board.regDate,                       //reply.count()는 QReply 객체의 인스턴스를 통해 count() 메소드를 호출.
+                                        reply.count().as("replyCount") //조인된 reply 엔티티의 개수를 세어 replyCount라는 이름으로 반환
+                                        ));
+
+        this.getQuerydsl().applyPagination(pageable, dtoQuery);
+
+        List<BoardListReplyCountDTO> dtoList = dtoQuery.fetch();
+
+        long count = dtoQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, count);
         }
 
         //Inner Join : 교집합
-        //left join : 왼쪽 기준 전부 select (오른쪽에 없는건 null로 표시)       /       왼쪽만 보려면 where B.ID(조인한 공통점이라 할 때) IS NULL
+        //left join : 왼쪽 기준 전부 select (오른쪽에 없는건 null로 표시)       /     교집합 없이 왼쪽만 보려면 where B.ID(조인한 공통점이라 할 때) IS NULL
         //right join : (left join과 동일. where조건에서 왼쪽에 있는 테이블로만 바꾸면 됨.)
         //Outer join : 합집합      /       교집합 부분 제외하고 싶으면 where A.ID IS NULL OR B.ID IS NULL
     }

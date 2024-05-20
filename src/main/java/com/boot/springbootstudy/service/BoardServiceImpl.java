@@ -2,6 +2,7 @@ package com.boot.springbootstudy.service;
 
 import com.boot.springbootstudy.domain.Board;
 import com.boot.springbootstudy.dto.BoardDTO;
+import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
 import com.boot.springbootstudy.dto.PageRequestDTO;
 import com.boot.springbootstudy.dto.PageResponseDTO;
 import com.boot.springbootstudy.repository.BoardRepository;
@@ -90,6 +91,23 @@ public class BoardServiceImpl implements BoardService{
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(dtoList)
                 .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO) {
+
+        String[] types = pageRequestDTO.getTypes(); //사용자 정의 메소드
+        String keyword = pageRequestDTO.getKeyword(); //Getter
+        Pageable pageable = pageRequestDTO.getPageable("bno"); //사용자 정의 메소드
+
+        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+
+        //빌더 객체의 제네릭 타입을 BoardListReplyCountDTO로 지정
+        return PageResponseDTO.<BoardListReplyCountDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements()) //전체 데이터 수를 반환합니다. result.getTotalElements() 메소드는 long 타입을 반환
                 .build();
     }
 }

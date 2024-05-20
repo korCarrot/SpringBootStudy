@@ -45,7 +45,7 @@
                         <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
                     </div>
 
-                    <div class="my-4" th:with="user=${#authentication.principal}">
+                    <div class="my-4">
                         <div class="float-end" th:with="link = ${pageRequestDTO.getLink()}">
                             <a th:href="|@{/board/list}?${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">List</button>
@@ -59,12 +59,12 @@
 
                 </div><!--end card body-->
 
-                <div class="col">
-                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
-                        <img class="card-img-top"
-                             th:each="fileName: ${dto.fileNames}"
-                             th:src="|/view/${fileName}|">
-                    </div>
+<!--                <div class="col">-->
+<!--                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">-->
+<!--                        <img class="card-img-top"-->
+<!--                             th:each="fileName: ${dto.fileNames}"-->
+<!--                             th:src="|/view/${fileName}|">-->
+<!--                    </div>-->
 
                 </div><!--end card-->
             </div><!-- end col-->
@@ -99,9 +99,9 @@
                             <span class="input-group-text">Reply Text</span>
                             <input type="text" class="form-control replyText" >
                         </div>
-                        <div class="input-group mb-3"  th:with="user=${#authentication.principal}">
+                        <div class="input-group mb-3">
                             <span class="input-group-text">Replyer</span>
-                            <input type="text" class="form-control replyer" th:value="${user.username}"  readonly>
+                            <input type="text" class="form-control replyer">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -146,9 +146,13 @@
 
 <script layout:fragment="script" th:inline="javascript">
 
-    const currentUser = [[${#authentication.principal.username}]]
-
     const bno = [[${dto.bno}]]
+
+    // get1(bno) //자바스크립트 reply.js의 함수
+
+    // async 함수는 항상 Promise를 반환하므로, 이 Promise를 사용하여 비동기 작업이 완료된 후의 처리를 then 블록과 catch 블록으로 정의
+    // get1(bno).then(data => {console.log(data)
+    // }).catch(e=>console.error(e))
 
     const replyList = document.querySelector('.replyList') //댓글 목록 DOM
     const replyPaging = document.querySelector('.replyPaging') //페이지 목록 DOM
@@ -193,6 +197,7 @@
 
     function printReplies(page,size,goLast){
 
+        //댓글 내용들 가져오기 -> 목록 / 페이지 처리
         getList({bno, page,size, goLast}).then(
             data => {
                 printList(data.dtoList) //목록 처리
@@ -273,7 +278,7 @@
     const closeModifyBtn = document.querySelector(".closeModifyBtn")
 
 
-    let hasAuth = false // 댓글의 작성자와 currentUser의 일치 여부
+    // let hasAuth = false // 댓글의 작성자와 currentUser의 일치 여부
 
 
     replyList.addEventListener("click", function (e){
@@ -307,13 +312,14 @@
     },false)
 
 
+    //댓글 수정 기능
     modifyBtn.addEventListener("click", function(e) {
 
-        if(!hasAuth){
-            alert("댓글 작성자만 수정이 가능합니다.")
-            modifyModal.hide()
-            return
-        }
+    //     // if(!hasAuth){
+    //     //     alert("댓글 작성자만 수정이 가능합니다.")
+    //     //     modifyModal.hide()
+    //     //     return
+    //     // }
 
 
         const replyObj = {
@@ -338,13 +344,15 @@
 
     }, false)
 
+
+    //댓글 삭제 기능
     removeBtn.addEventListener("click", function(e) {
 
-        if(!hasAuth){
-            alert("댓글 작성자만 삭제가 가능합니다.")
-            modifyModal.hide()
-            return
-        }
+    //     // if(!hasAuth){
+    //     //     alert("댓글 작성자만 삭제가 가능합니다.")
+    //     //     modifyModal.hide()
+    //     //     return
+    //     // }
 
 
         removeReply(replyHeader.innerHTML).then(result => {
@@ -366,3 +374,4 @@
 
 </script>
 
+</html>

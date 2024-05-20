@@ -1,6 +1,7 @@
 package com.boot.springbootstudy.controller;
 
 import com.boot.springbootstudy.dto.BoardDTO;
+import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
 import com.boot.springbootstudy.dto.PageRequestDTO;
 import com.boot.springbootstudy.dto.PageResponseDTO;
 import com.boot.springbootstudy.service.BoardService;
@@ -29,7 +30,9 @@ public class BoardController {
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
 
-        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+//        PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
+
+        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
 
         log.info(responseDTO);
 

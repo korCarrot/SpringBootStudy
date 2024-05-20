@@ -42,9 +42,6 @@
                 <div class="card-body" >
                     <h5 class="card-title">Board List </h5>
 
-
-
-
                     <table class="table">
                         <thead>
                         <tr>
@@ -59,7 +56,9 @@
                         <tr th:each="dto:${responseDTO.dtoList}"  >
                             <td>[[${dto.bno}]]</td>
                             <td>
+                                <!-- || 는   표현식 내에서 텍스트를 병합하거나 여러 표현식을 결합-->
                                 <a th:href="|@{/board/read(bno =${dto.bno})}&${link}|" class="text-decoration-none"> [[${dto.title}]] </a>
+                                <span class="badge progress-bar-success" style="background-color: #0a53be">[[${dto.replyCount}]]</span> <!-- BoardListReplyCountDTO의 필드 -->
 
                             </td>
                             <td>[[${dto.writer}]]</td>

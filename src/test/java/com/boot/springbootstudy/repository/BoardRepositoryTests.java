@@ -1,6 +1,7 @@
 package com.boot.springbootstudy.repository;
 
 import com.boot.springbootstudy.domain.Board;
+import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+//Spring이나 Spring Boot에서 테스트 메소드의 리턴 타입은 꼭 void일 필요는 없지만, 테스트의 명확성과 프레임워크의 기대에 맞추기 위해 void를 사용하는 것이 일반적입니다.
 @SpringBootTest
 @Log4j2
 public class BoardRepositoryTests {
@@ -157,4 +159,43 @@ public class BoardRepositoryTests {
 
         result.getContent().forEach( board -> log.info(board));
     }
+
+
+    //댓글 개수와 함께 게시글 검색
+    @Test
+    public void testSearchReplyCount(){
+
+        String[] types = {"t", "c", "w"};
+
+        String keyword = "1";
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+
+        //total pages
+        log.info("total pages: " + result.getTotalPages());
+        //page size
+        log.info("page size: " + result.getSize());
+        //pageNumber
+        log.info("pageNumber: " + result.getNumber()); //result.getNumber()는 Page 객체의 메소드로, 현재 페이지 번호를 나타냅니다. 이 메소드는 현재 페이지의 인덱스를 반환하며, 반환되는 값은 0부터 시작합니다.
+        //prev next
+        log.info("result.hasPrevious(): result.hasNext() : " + result.hasPrevious() +": " + result.hasNext());
+
+        result.getContent().forEach(log::info);
+    }
+
 }
+
+/*
+Spring Data JPA에서 페이지네이션을 처리할 때, Page 객체는 여러 유용한 정보를 제공합니다. 여기에는 현재 페이지, 전체 페이지 수, 현재 페이지의 데이터 리스트, 전체 데이터 수 등이 포함됩니다. Page 객체의 주요 메소드들 중 일부는 다음과 같습니다:
+
+getTotalElements(): 전체 데이터 수를 반환합니다.
+getTotalPages(): 전체 페이지 수를 반환합니다.
+getSize(): 페이지 당 데이터 수를 반환합니다.
+getNumber(): 현재 페이지 번호를 반환합니다.
+getContent(): 현재 페이지의 데이터를 List 형태로 반환합니다.
+hasPrevious(): 이전 페이지가 있는지 여부를 반환합니다.
+hasNext(): 다음 페이지가 있는지 여부를 반환합니다.
+
+ */
