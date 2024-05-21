@@ -172,6 +172,28 @@
         return new PageImpl<>(dtoList, pageable, count);
         }
 
+        @Override
+        public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+
+            QBoard board = QBoard.board;
+            QReply reply = QReply.reply;
+
+            JPQLQuery<Board> boardJPQLQuery = from(board);
+            boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));      //left join
+
+            getQuerydsl().applyPagination(pageable, boardJPQLQuery);    //paging
+
+            List<Board> boardList = boardJPQLQuery.fetch();
+
+            boardList.forEach(board1 -> {
+                System.out.println(board1.getBno());        //paging이 적용되어 10개의 bno가 나온다.
+                System.out.println(board1.getImageSet());   //@BatchSize가 적용된다.
+                System.out.println("-------------------");
+            });
+
+            return null;
+        }
+
         //Inner Join : 교집합
         //left join : 왼쪽 기준 전부 select (오른쪽에 없는건 null로 표시)       /     교집합 없이 왼쪽만 보려면 where B.ID(조인한 공통점이라 할 때) IS NULL
         //right join : (left join과 동일. where조건에서 왼쪽에 있는 테이블로만 바꾸면 됨.)

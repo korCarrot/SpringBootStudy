@@ -4,8 +4,11 @@ import com.boot.springbootstudy.domain.Board;
 import com.boot.springbootstudy.repository.search.BoardSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 //JpaRepository는 다양한 기본 메서드들을 제공
 //save(S entity): 엔티티를 저장하거나 업데이트합니다.           //deleteById(ID id): 주어진 ID에 해당하는 엔티티를 삭제합니다.
@@ -29,4 +32,12 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
 //  value: 실행할 SQL 쿼리를 지정   nativeQuery: 네이티브 쿼리를 실행할지 여부를 지정
     @Query(value = "select now()", nativeQuery = true)
     String getTime();
+
+
+    //지연(lazy)로딩이지만 한 번에 조인처리해서 select가 이루어지도록 함 (순서 : 1. @Query  2. @EntityGraph)
+/* @EntityGraph : JPA 엔티티 그래프(Entity Graph)를 정의하는데 사용됩니다. 이는 특정 엔티티를 조회할 때 연관된 엔티티를 함께 로드하는 방식(Eager Fetching)을 지정하는 데 유용합니다.
+    attributePaths: 함께 로드할 속성(연관된 엔티티)의 경로를 지정합니다. 여기서는 "imageSet"을 지정하여 Board 엔티티와 연관된 BoardImage 엔티티들을 함께 로드합니다. */
+    @EntityGraph(attributePaths = {"imageSet"})
+    @Query("select b from Board b where b.bno =:bno")
+    Optional<Board> findByIdWithImages(Long bno);
 }

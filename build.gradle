@@ -93,6 +93,10 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
+    //thumbnailator
+    implementation 'net.coobird:thumbnailator:0.4.16'
+
+
 }
 
 // JUnit 테스트 플랫폼을 사용

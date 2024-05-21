@@ -86,7 +86,7 @@
             </div>
         </div>
 
-
+        <!-- 댓글 등록 모달창 -->
         <div class="modal registerModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -113,6 +113,8 @@
         </div>
         <!-- end regist modal -->
 
+
+        <!-- 댓글 수정 모달창 -->
         <div class="modal modifyModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -162,6 +164,7 @@
 
         if(dtoList && dtoList.length > 0){
 
+            // for (const dto of dtoList): dtoList의 각 요소를 dto라는 변수에 할당하면서 반복합니다.
             for (const dto of dtoList) {
 
                 str += `<li class="list-group-item d-flex replyItem">
@@ -211,7 +214,7 @@
 
     printReplies(1,10, true)
 
-    //댓글 등록 모달
+    //댓글 등록 모달창
     const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
     //registerModel
     const registerBtn = document.querySelector(".registerBtn")
@@ -228,6 +231,8 @@
         registerModal.hide()
     },false)
 
+
+    //댓글 등록
     registerBtn.addEventListener("click", function(e){
         const replyObj = {
             bno:bno,
@@ -235,9 +240,9 @@
             replyer:replyer.value}
 
         addReply(replyObj).then(result => {
-            alert(result.rno)
+            alert(result.rno)   //댓글 등록 후 알림
             registerModal.hide()
-            replyText.value = ''
+            replyText.value = ''    //다음 댓글 위해 초기화 하는듯.
             replyer.value =''
             printReplies(1,10, true) //댓글 목록 갱신
         }).catch(e => {
@@ -246,7 +251,7 @@
     }, false)
 
 
-
+    //페이지 이동
     let page = 1
     let size = 10
 
@@ -298,14 +303,15 @@
             return
         }
 
+
         getReply(rno).then(reply => { //댓글의 내용을 모달창에 채워서 보여주는
 
             console.log(reply)
-            replyHeader.innerHTML = reply.rno
+            replyHeader.innerHTML = reply.rno  //댓글 번호를 <h5 class="replyHeader"></h5>에 넣는다.
             modifyText.value = reply.replyText
             modifyModal.show()
 
-            hasAuth = currentUser === reply.replyer //댓글의 작성자와 현재 사용자 일치 여부 확인
+            // hasAuth = currentUser === reply.replyer //댓글의 작성자와 현재 사용자 일치 여부 확인
 
         }).catch(e => alert('error'))
 
@@ -331,13 +337,15 @@
             alert(result.rno+' 댓글이 수정되었습니다.')
             replyText.value = ''
             modifyModal.hide()
-            printReplies(page, size)
+            printReplies(page, size)    //goLast 값을 (true로) 주지 않았기 때문에 현재 페이지로 이동
 
         }).catch(e => {
             console.log(e)
         })
     },false)
 
+
+    //댓글 수정 모달창 닫기
     closeModifyBtn.addEventListener("click", function(e){
 
         modifyModal.hide()

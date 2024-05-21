@@ -1,6 +1,7 @@
 package com.boot.springbootstudy.repository;
 
 import com.boot.springbootstudy.domain.Board;
+import com.boot.springbootstudy.domain.BoardImage;
 import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -10,9 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 //Spring이나 Spring Boot에서 테스트 메소드의 리턴 타입은 꼭 void일 필요는 없지만, 테스트의 명확성과 프레임워크의 기대에 맞추기 위해 void를 사용하는 것이 일반적입니다.
@@ -23,6 +27,9 @@ public class BoardRepositoryTests {
     // BaseEntity를 상속한 Board클래스(테이블)는 BoardRepository인터페이스에서 상속하는 JpaRepository의 제네릭으로 설정되어있음.
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
 
 // insert, update 기능 - save()
     @Test   //테스트 코드에서 @ID값이 null이므로 insert만 실행됩니다.
@@ -183,6 +190,113 @@ public class BoardRepositoryTests {
         log.info("result.hasPrevious(): result.hasNext() : " + result.hasPrevious() +": " + result.hasNext());
 
         result.getContent().forEach(log::info);
+    }
+
+    @Test
+    public void testInsertWithImages(){
+
+        Board board = Board.builder()
+                .title("Image Test")
+                .content("첨부파일 테스트")
+                .writer("tester")
+                .build();
+
+        for (int i = 0; i < 3; i++) {
+
+            board.addImage(UUID.randomUUID().toString(), "file"+i+".jpg");
+        } //end for
+
+        boardRepository.save(board);
+    }
+
+
+    @Test
+//    @Transactional //여러번 쿼리를 실행하기 위함 (board객체를 갖고와서 DB연결이 끊어지기 때문)
+    public void testReadWithImages(){
+
+        //반드시 존재하는 bno로 확인
+//        Optional<Board> result = boardRepository.findById(1L);
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+
+        Board board = result.orElseThrow();
+
+        log.info(board);
+        log.info("----------");
+//        log.info(board.getImageSet());
+
+        for(BoardImage boardImage : board.getImageSet()){
+            log.info(boardImage);
+        }
+    }
+
+    @Test
+    public void testModifyImages(){
+
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+
+        Board board = result.orElseThrow();
+
+        //기존의 첨부파일들은 삭제
+        board.clearImages();
+
+        //새로운 첨부파일들
+        for (int i = 0; i < 2; i++) {
+
+            board.addImage(UUID.randomUUID().toString(), "updatefile"+i+".jpg");
+        }
+
+        boardRepository.save(board);
+
+    }
+
+    @Test
+    @Transactional  //기본적으로 트랜잭션 매니저가 모든 변경 사항을 트랜잭션 범위 내에서 커밋합니다. 그러나 @Transactional 어노테이션을 사용할 때 트랜잭션 경계를 정의할 수 있습니다. 이때 특정 메서드에서 변경을 수행한 후에 트랜잭션을 커밋하고 싶을 때 @Commit 어노테이션을 사용할 수 있습니다.
+    @Commit //@Commit 어노테이션은 Spring에서 트랜잭션을 사용할 때 사용됩니다. 이 어노테이션은 트랜잭션이 완료되고 커밋되는 시점에 메서드 실행을 강제합니다.  // 일반적으로 예외 발생 시 롤백되도록 트랜잭션을 구성하는 것이 안전합니다.
+    public void testRemoveAll(){
+
+        Long bno = 1L;
+
+        replyRepository.deleteByBoard_Bno(bno); //Reply 엔티티들을 삭제
+
+        boardRepository.deleteById(bno);    //그리고 Board를 삭제
+
+    }
+
+    //더미 데이터 추가
+    @Test
+    public void testInsertAll(){
+
+        for (int i = 0; i < 100; i++) {
+
+            Board board = Board.builder()
+                    .title("Title.."+i)
+                    .content("Content.."+i)
+                    .writer("Writer.."+i)
+                    .build();
+
+            //이미지 넣기
+            for (int j = 0; j < 3; j++) {
+
+                if (i % 5 == 0) {
+                    continue;
+                }
+                board.addImage(UUID.randomUUID().toString(), i + "file" + j + ".jpg");
+
+            } //end for (j)
+
+            boardRepository.save(board);
+
+        } //end for (i)
+    }
+
+
+    @Transactional
+    @Test
+    public void testSearchImageReplyCount(){
+
+        Pageable pageable = PageRequest.of(0,10,Sort.by("bno").descending());
+
+        boardRepository.searchWithAll(null, null, pageable);
     }
 
 }

@@ -35,17 +35,21 @@ async function getList({bno, page, size, goLast}){
     return result.data
 }
 
+// async: 이 키워드는 함수가 비동기 함수임을 나타냅니다.
+// await 키워드를 사용할 수 있으며, 프로미스를 반환합니다. (값을 반환하겠다는 약속. axios.post 요청이 완료될 때까지 기다림)
 //댓글 등록
 async function addReply(replyObj) {
-    const response = await axios.post(`/replies/`,replyObj)
+    const response = await axios.post(`/replies/`, replyObj)
     return response.data
 }
 
+//댓글 조회
 async function getReply(rno) {
     const response = await axios.get(`/replies/${rno}`)
     return response.data
 }
 
+//댓글 수정
 async function modifyReply(replyObj) {
 
     const response = await axios.put(`/replies/${replyObj.rno}`, replyObj)
