@@ -107,6 +107,7 @@
         </div>
     </div><!-- register modal -->
 
+    <!-- axios 사용 -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="/js/upload.js"></script>
@@ -145,60 +146,61 @@
 
         formObj.action = `/board/modify?${link}`
 
-        //첨부파일 추가
-        // appendFileData()
-    //
+        //첨부파일을<input type='hidden..>으로 추가
+        appendFileData()
+
     //     //삭제대상 파일들의 삭제
-    //     callRemoveFiles()
-    //
+        callRemoveFiles()
+
         formObj.method ='post'
         formObj.submit()
 
 
     }, false)
-    //
-    // function appendFileData(){
-    //
-    //     const target = document.querySelector(".uploadHidden")
-    //     const uploadFiles = uploadResult.querySelectorAll("img")
-    //
-    //     let str = ''
-    //
-    //     for (let i = 0; i < uploadFiles.length ; i++) {
-    //         const uploadFile = uploadFiles[i]
-    //         const imgLink = uploadFile.getAttribute("data-src")
-    //
-    //         str += `<input type='hidden' name='fileNames' value="${imgLink}">`
-    //     }
-    //
-    //     target.innerHTML = str;
-    //
-    // }
 
-    // function appendNotShownData(){
-    //
-    //     if(removeFileList.length == 0){
-    //         return
-    //     }
-    //
-    //     const target = document.querySelector(".uploadHidden")
-    //     let str = ''
-    //
-    //     for (let i = 0; i < removeFileList.length ; i++) {
-    //
-    //         const {uuid, fileName} = removeFileList[i];
-    //
-    //         str += `<input type='hidden' name='fileNames' value="${uuid}_${fileName}">`
-    //     }
-    //     target.innerHTML += str;
-    // }
-    //
-    // function callRemoveFiles(){
-    //
-    //     removeFileList.forEach( ({uuid,fileName}) => {
-    //         removeFileToServer({uuid, fileName})
-    //     })
-    // }
+    function appendFileData(){
+
+        const target = document.querySelector(".uploadHidden")
+        const uploadFiles = uploadResult.querySelectorAll("img")
+
+        let str = ''
+
+        for (let i = 0; i < uploadFiles.length ; i++) {
+            const uploadFile = uploadFiles[i]
+            const imgLink = uploadFile.getAttribute("data-src")
+
+            str += `<input type='hidden' name='fileNames' value="${imgLink}">`
+        }
+
+        target.innerHTML = str;
+
+    }
+
+    function appendNotShownData(){
+
+        if(removeFileList.length == 0){
+            return
+        }
+
+        const target = document.querySelector(".uploadHidden")
+        let str = ''
+
+        for (let i = 0; i < removeFileList.length ; i++) {
+
+            // JavaScript의 구조 분해 할당(구조 분해 할당)를 사용하여 removeFileList[i] 배열 요소의 각 프로퍼티를 개별 변수에 할당
+            const {uuid, fileName} = removeFileList[i];
+
+            str += `<input type='hidden' name='fileNames' value="${uuid}_${fileName}">`
+        }
+        target.innerHTML += str;
+    }
+
+    function callRemoveFiles(){
+
+        removeFileList.forEach( ({uuid,fileName}) => {
+            removeFileToServer({uuid, fileName})
+        })
+    }
 
 
     document.querySelector(".removeBtn").addEventListener("click", function(e){
@@ -206,9 +208,9 @@
         e.stopPropagation()
 
     //     //화면에 보이는 파일들을 form태그에 추가
-    //     appendFileData()
+        appendFileData()
     //     //화면에서 안보이도록 처리된 파일들을 form태그에 추가
-    //     appendNotShownData()
+        appendNotShownData()
 
         formObj.action = `/board/remove`
         formObj.method ='post'
@@ -225,83 +227,89 @@
         self.location =`/board/list?${link}`
 
     }, false)
-    //
-    // //최종적으로 삭제될 파일들의 목록
-    // const removeFileList = []
-    //
-    // function removeFile(uuid,fileName, obj){
-    //
-    //     if(!confirm("파일을 삭제하시겠습니까?")){
-    //         return
-    //     }
-    //
-    //     console.log(uuid)
-    //     console.log(fileName)
-    //
-    //     console.log(obj)
-    //
-    //     removeFileList.push({uuid,fileName})
-    //
-    //     const targetDiv = obj.closest(".card")
-    //     targetDiv.remove()
-    // }
 
 
-    // //업로드 모달
-    // const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
-    //
-    // document.querySelector(".uploadFileBtn").addEventListener("click", function(e){
-    //
-    //     e.stopPropagation()
-    //     e.preventDefault()
-    //     uploadModal.show()
-    //
-    // }, false)
-    //
-    // document.querySelector(".uploadBtn").addEventListener("click", function(e){
-    //
-    //     const formObj = new FormData();
-    //
-    //     const fileInput = document.querySelector("input[name='files']")
-    //
-    //     console.log(fileInput.files)
-    //
-    //     const files = fileInput.files
-    //
-    //     for (let i = 0; i < files.length; i++) {
-    //         formObj.append("files", files[i]);
-    //     }
-    //
-    //
-    //     uploadToServer(formObj).then(result => {
-    //         console.log(result)
-    //         //console.log(result)
-    //         for (const uploadResult of result) {
-    //             showUploadFile(uploadResult)
-    //         }
-    //         uploadModal.hide()
-    //     }).catch(e => {
-    //         uploadModal.hide()
-    //     })
-    //
-    // },false)
-    //
-    // const uploadResult = document.querySelector(".uploadResult")
-    //
-    // function showUploadFile({uuid, fileName, link}){
-    //
-    //     const str =`<div class="card col-4">
-    //         <div class="card-header d-flex justify-content-center">
-    //             ${fileName}
-    //             <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)" >X</button>
-    //         </div>
-    //         <div class="card-body">
-    //              <img src="/view/${link}" data-src="${uuid+"_"+fileName}" >
-    //         </div>
-    //     </div><!-- card -->`
-    //
-    //     uploadResult.innerHTML += str
-    // }
+    //최종적으로 삭제될 파일들의 목록
+    const removeFileList = []
+
+    //서버에서 최종 삭제 전까지는 removeFileList 배열에 삭제할 파일의 정보들을 보관
+    function removeFile(uuid,fileName, obj){
+
+        // 삭제하지 않는 경우 종료
+        if(!confirm("파일을 삭제하시겠습니까?")){
+            return
+        }
+
+        console.log(uuid)
+        console.log(fileName)
+
+        console.log(obj)
+
+        removeFileList.push({uuid,fileName})    //push() 메서드는 JavaScript에서 배열(Array)의 끝에 하나 이상의 요소를 추가하고, 배열의 새로운 길이를 반환하는 함수
+                                                // let array = [1, 2, 3];
+                                                // array.push(4, 5, 6);
+                                                // console.log(array); // [1, 2, 3, 4, 5, 6]
+
+        const targetDiv = obj.closest(".card")
+        targetDiv.remove()
+    }
+
+
+    //업로드 모달
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+
+    document.querySelector(".uploadFileBtn").addEventListener("click", function(e){
+
+        e.stopPropagation()
+        e.preventDefault()
+        uploadModal.show()
+
+    }, false)
+
+    document.querySelector(".uploadBtn").addEventListener("click", function(e){
+
+        const formObj = new FormData();
+
+        const fileInput = document.querySelector("input[name='files']")
+
+        console.log(fileInput.files)
+
+        const files = fileInput.files
+
+        for (let i = 0; i < files.length; i++) {
+            formObj.append("files", files[i]);
+        }
+
+        //파일 업로드 & 화면에 나타내기
+        uploadToServer(formObj).then(result => {
+            console.log(result)
+
+            for (const uploadResult of result) {
+                showUploadFile(uploadResult)
+            }
+            uploadModal.hide()
+        }).catch(e => {
+            uploadModal.hide()
+        })
+
+    },false)
+
+    const uploadResult = document.querySelector(".uploadResult")
+
+    function showUploadFile({uuid, fileName, link}){
+
+        const str =`<div class="card col-4">
+             <div class="card-header d-flex justify-content-center">
+                 ${fileName}
+                 <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)" >X</button>
+             </div>
+             <div class="card-body">
+                  <img src="/view/${link}" data-src="${uuid+"_"+fileName}" >
+             </div>
+         </div><!-- card -->`
+
+         uploadResult.innerHTML += str
+     }
 
 </script>
 

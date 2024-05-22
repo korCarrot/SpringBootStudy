@@ -31,10 +31,8 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">Writer</span>
-                            <input type="text" name="writer" class="form-control" placeholder="Writer"
-                                   th:value="${#authentication.principal.username}" readonly>
-
-
+                            <input type="text" name="writer" class="form-control" placeholder="Writer">
+<!--                                   th:value="${#authentication.principal.username}" readonly>-->
                         </div>
 
                         <div class="input-group mb-3">
@@ -59,34 +57,37 @@
         </div><!-- end col-->
     </div><!-- end row-->
 
-<!--    <!—- 첨부 파일 섬네일을 보여줄 부분 &ndash;&gt;-->
-<!--    <div class="row mt-3">-->
-<!--        <div class="col ">-->
-<!--            <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap;">-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!—- 첨부 파일 섬네일을 보여줄 부분 -->
+    <div class="row mt-3">
+        <div class="col ">
+            <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap;">
+            </div>
+        </div>
+    </div>
 
-<!--    <!—- 첨부파일 추가를 위한 모달창 &ndash;&gt;-->
-<!--    <div class="modal uploadModal" tabindex="-1">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title">Upload File</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                </div>-->
-<!--                <div class="modal-body">-->
-<!--                    <div class="input-group mb-3">-->
-<!--                        <input type="file" name="files" class="form-control" multiple >-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="modal-footer">-->
-<!--                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>-->
-<!--                    <button type="button" class="btn btn-outline-dark closeUploadBtn" >Close</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>&lt;!&ndash; register modal &ndash;&gt;-->
+    <!—- 첨부파일 추가를 위한 모달창 -->
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+<!-- class="btn-close": 부트스트랩의 기본 스타일을 가진 닫기 버튼임을 나타냅니다. data-bs-dismiss="modal": 클릭하면 모달을 닫는 기능을 제공하는 부트스트랩의 특수 속성입니다.
+     aria-label="Close": 스크린 리더가 버튼의 역할을 이해하고 사용자에게 제공하는 레이블을 나타냅니다. "Close"는 버튼이 모달을 닫는다는 의미를 전달합니다.-->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+<!--                        multiple은 HTML <input> 요소의 속성 중 하나로, 파일을 선택하는 데 여러 개의 파일을 선택할 수 있도록 허용하는 데 사용-->
+                        <input type="file" name="files" class="form-control" multiple >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn" >Close</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- register modal -->
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -96,8 +97,6 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
-
-    const auth = [[${#authentication.principal}]]
 
 
     const errors = [[${errors}]]
@@ -127,11 +126,11 @@
 
     document.querySelector(".uploadBtn").addEventListener("click", function(e){
 
-        const formObj = new FormData();
+        const formObj = new FormData(); //FormData 객체는 HTML 폼 데이터를 쉽게 구성하고, 이를 XMLHttpRequest나 fetch API를 사용하여 서버로 전송할 수 있도록 해주는 JavaScript API입니다. new FormData()를 사용하면 빈 FormData 객체를 생성할 수 있으며, 이를 통해 프로그램적으로 폼 데이터를 추가하거나 기존 폼 요소로부터 데이터를 추출할 수 있습니다.
 
         const fileInput = document.querySelector("input[name='files']")
 
-        console.log(fileInput.files)
+        console.log(fileInput.files)    // fileInput.files : 선택된 파일들을 나타내는 FileList 객체
 
         const files = fileInput.files
 
@@ -142,7 +141,7 @@
 
         uploadToServer(formObj).then(result => {
             console.log(result)
-            //console.log(result)
+
             for (const uploadResult of result) {
                 showUploadFile(uploadResult)
             }
@@ -160,7 +159,7 @@
         const str =`<div class="card col-4">
             <div class="card-header d-flex justify-content-center">
                 ${fileName}
-                <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)" >X</button>
+                <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)" > X</button>
             </div>
             <div class="card-body">
                  <img src="/view/${link}" data-src="${uuid+"_"+fileName}" >
@@ -178,10 +177,10 @@
 
         console.log(obj)
 
-        const targetDiv = obj.closest(".card")
+        const targetDiv = obj.closest(".card")  //obj.closest(".card")를 사용하여 obj 요소로부터 가장 가까운 조상 요소 중 class가 card인 요소를 찾습니다.
 
         removeFileToServer(uuid, fileName).then(data => {
-            targetDiv.remove()
+            targetDiv.remove()  //remove()는 JavaScript의 DOM API에서 제공하는 메서드로, 선택한 요소를 DOM 트리에서 제거합니다. 이 메서드를 호출하면 해당 요소와 그 하위 요소들이 모두 DOM에서 삭제됩니다.
         })
     }
 

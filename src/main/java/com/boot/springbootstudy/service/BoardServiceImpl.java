@@ -1,10 +1,7 @@
 package com.boot.springbootstudy.service;
 
 import com.boot.springbootstudy.domain.Board;
-import com.boot.springbootstudy.dto.BoardDTO;
-import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
-import com.boot.springbootstudy.dto.PageRequestDTO;
-import com.boot.springbootstudy.dto.PageResponseDTO;
+import com.boot.springbootstudy.dto.*;
 import com.boot.springbootstudy.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,27 +25,52 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
 
+//    @Override
+//    public Long register(BoardDTO boardDTO) {
+//
+//        Board board = modelMapper.map(boardDTO, Board.class);
+//
+//        Long bno = boardRepository.save(board).getBno();
+//
+//        return bno;
+//    }
+
     @Override
     public Long register(BoardDTO boardDTO) {
 
-        Board board = modelMapper.map(boardDTO, Board.class);
+        Board board = dtoToEntity(boardDTO);
 
         Long bno = boardRepository.save(board).getBno();
 
         return bno;
     }
 
+//    @Override
+//    public BoardDTO readOne(Long bno) {
+//
+//        Optional<Board> result = boardRepository.findById(bno);
+//
+//        Board board = result.orElseThrow();
+//
+//        BoardDTO  boardDTO = modelMapper.map(board, BoardDTO.class);
+//
+//        return boardDTO;
+//    }
+
+    //조회
     @Override
     public BoardDTO readOne(Long bno) {
 
-        Optional<Board> result = boardRepository.findById(bno);
+        //board_image까지 조인 처리되는 (@EntityGraph를 이용하는) findByIdWithImages()를 사용
+        Optional<Board> result = boardRepository.findByIdWithImages(bno);
 
         Board board = result.orElseThrow();
 
-        BoardDTO  boardDTO = modelMapper.map(board, BoardDTO.class);
+        BoardDTO boardDTO = entityToDTO(board);
 
         return boardDTO;
     }
+
 
 //  수정
     @Override
@@ -60,8 +82,17 @@ public class BoardServiceImpl implements BoardService{
 
         board.change(boardDTO.getTitle(), boardDTO.getContent());
 
-        boardRepository.save(board);
+        //첨부파일의 처리
+        board.clearImages();
 
+        if(boardDTO.getFileNames() != null){
+            for (String fileName : boardDTO.getFileNames()) {
+                String[] arr = fileName.split("_");
+                board.addImage(arr[0], arr[1]);
+            }
+        }
+
+        boardRepository.save(board);
     }
 
 
@@ -108,6 +139,24 @@ public class BoardServiceImpl implements BoardService{
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements()) //전체 데이터 수를 반환합니다. result.getTotalElements() 메소드는 long 타입을 반환
+                .build();
+    }
+
+
+    //게시글의 이미지와 댓글의 숫자까지 처리
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+
+        Page<BoardListAllDTO> result = boardRepository.searchWithAll(types, keyword, pageable);
+
+        return PageResponseDTO.<BoardListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
                 .build();
     }
 }

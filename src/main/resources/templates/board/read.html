@@ -50,7 +50,7 @@
                             <a th:href="|@{/board/list}?${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">List</button>
                             </a>
-                            <a th:if="${user != null && user.username == dto.writer}" th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
+                            <a th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-secondary">Modify</button>
                             </a>
                         </div>
@@ -59,12 +59,14 @@
 
                 </div><!--end card body-->
 
-<!--                <div class="col">-->
-<!--                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">-->
-<!--                        <img class="card-img-top"-->
-<!--                             th:each="fileName: ${dto.fileNames}"-->
-<!--                             th:src="|/view/${fileName}|">-->
-<!--                    </div>-->
+                <div class="col">
+                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <!-- each문을 따라 반복해서 이미지 삽입-->
+                        <img class="card-img-top"
+                             th:each="fileName: ${dto.fileNames}"
+                             th:src="|/view/${fileName}|">
+
+                    </div>
 
                 </div><!--end card-->
             </div><!-- end col-->

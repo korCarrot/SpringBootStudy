@@ -24,7 +24,7 @@ import java.util.*;
 @Log4j2
 public class UpDownController {
 
-    @Value("${com.boot.upload.path}")   // import 시에 springframework로 시작하는 Value
+    @Value("${com.boot.upload.path}")   // ${com.boot.upload.path}  // import 시에 springframework로 시작하는 @Value를 선택해야 함
     private String uploadPath;
 
     //파일 업로드 & 썸네일 생성 (폴더에 2개의 이미지 파일이 생김)
@@ -82,7 +82,7 @@ public class UpDownController {
                         list.add(UploadResultDTO.builder()
                                         .uuid(uuid)
                                         .fileName(originalFilename)
-                                        .img(image) //img값(true / false)에 따라 getLink값이 link라는 키로 JSON 데이터가 생긴다.
+                                        .img(image) //img값(true / false)에 따라 getLink값이 link라는 키로 JSON 데이터가 생긴다. (UploadResultDTO)
                                         .build());
 
                     }

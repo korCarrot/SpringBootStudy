@@ -3,8 +3,11 @@
     import com.boot.springbootstudy.domain.Board;
     import com.boot.springbootstudy.domain.QBoard;
     import com.boot.springbootstudy.domain.QReply;
+    import com.boot.springbootstudy.dto.BoardImageDTO;
+    import com.boot.springbootstudy.dto.BoardListAllDTO;
     import com.boot.springbootstudy.dto.BoardListReplyCountDTO;
     import com.querydsl.core.BooleanBuilder;
+    import com.querydsl.core.Tuple;
     import com.querydsl.core.types.Projections;
     import com.querydsl.jpa.JPQLQuery;
     import org.springframework.data.domain.Page;
@@ -13,6 +16,7 @@
     import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
     import java.util.List;
+    import java.util.stream.Collectors;
 
     //QuerydslRepositorySupport는 스프링 데이터에서 제공하는 클래스로,
     // Java에서 타입 안전한 쿼리를 위한 프레임워크인 Querydsl을 사용하는 리포지토리 구현을 위한 기본 클래스 역할을 합니다.
@@ -155,6 +159,9 @@
             query.where(board.bno.gt(0L));
 
 
+            //이 코드에서 Projections.bean 메서드는 BoardListReplyCountDTO 클래스의 인스턴스를 생성
+            //Projections는 주로 쿼리 DSL(Query DSL) 라이브러리에서 사용되는 기능
+            //JPQL(Java Persistence Query Language) 쿼리에서 DTO(Data Transfer Object)로 결과를 매핑하는 데 사용
         JPQLQuery<BoardListReplyCountDTO> dtoQuery = query.select(Projections.bean(BoardListReplyCountDTO.class,
                                         board.bno,
                                         board.title,
@@ -172,8 +179,32 @@
         return new PageImpl<>(dtoList, pageable, count);
         }
 
+//        @Override
+//        public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+//
+//            QBoard board = QBoard.board;
+//            QReply reply = QReply.reply;
+//
+//            JPQLQuery<Board> boardJPQLQuery = from(board);
+//            boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));      //left join
+//
+//            getQuerydsl().applyPagination(pageable, boardJPQLQuery);    //paging
+//
+//            List<Board> boardList = boardJPQLQuery.fetch();
+//
+//            boardList.forEach(board1 -> {
+//                System.out.println(board1.getBno());        //paging이 적용되어 10개의 bno가 나온다.
+//                System.out.println(board1.getImageSet());   //@BatchSize가 적용된다.
+//                System.out.println("-------------------");
+//            });
+//
+//            return null;
+//        }
+
+
+        //게시글의 이미지와 댓글의 숫자까지 처리
         @Override
-        public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+        public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
 
             QBoard board = QBoard.board;
             QReply reply = QReply.reply;
@@ -181,18 +212,74 @@
             JPQLQuery<Board> boardJPQLQuery = from(board);
             boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));      //left join
 
+            if ((types != null && types.length > 0) && keyword != null) {
+
+                BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+                for (String type : types) {
+
+                    switch (type){
+                        case "t" :
+                                   booleanBuilder.or(board.title.contains(keyword));
+                                   break;
+                        case "c" :
+                                   booleanBuilder.or(board.content.contains(keyword));
+                                   break;
+
+                        case "w" :
+                                   booleanBuilder.or(board.writer.contains(keyword));
+                                   break;
+                    }
+                }
+                boardJPQLQuery.where(booleanBuilder);
+            }
+
+            boardJPQLQuery.groupBy(board);  // QueryDSL을 사용하여 board 엔티티를 기준으로 그룹화(group by)하는 부분
+
             getQuerydsl().applyPagination(pageable, boardJPQLQuery);    //paging
 
-            List<Board> boardList = boardJPQLQuery.fetch();
+            // QueryDSL을 사용하여 JPQL 쿼리의 결과를 Tuple 형태로 선택 (행 - SQL에서 여러 열을 선택할 때와 유사)
+            //reply.countDistinct(): 각 board 엔티티에 대한 고유한 댓글 수를 셉니다. 이는 각 board에 연결된 reply의 고유 개수를 의미
+            JPQLQuery<Tuple> tupleJPQLQuery = boardJPQLQuery.select(board, reply.countDistinct());
 
-            boardList.forEach(board1 -> {
-                System.out.println(board1.getBno());        //paging이 적용되어 10개의 bno가 나온다.
-                System.out.println(board1.getImageSet());   //@BatchSize가 적용된다.
-                System.out.println("-------------------");
-            });
+            List<Tuple> tupleList = tupleJPQLQuery.fetch();
 
-            return null;
-        }
+            //***stream()의 map()은 내부에서 반복 처리가 가능하다!!!!!!!!!!!!!!
+            List<BoardListAllDTO> dtoList = tupleList.stream().map(tuple -> {
+
+                Board board1 = tuple.get(board);    //Board board1 = tuple.get(board); : tuple에서 board 엔티티를 가져옵니다. 이는 쿼리에서 선택한 Board 엔티티 전체를 의미합니다.
+                long replyCount = tuple.get(1, Long.class); //long replyCount = tuple.get(1, Long.class); : tuple에서 인덱스 1에 해당하는 댓글 수를 Long 타입으로 가져옵니다. 1은 쿼리에서 두 번째로 선택된 항목(reply.countDistinct())을 의미합니다. //get(int index, Class<T> type). index: 추출하려는 값의 인덱스입니다. type: 추출하려는 값의 데이터 타입입니다.
+                //이 과정은 스트림의 각 요소(Tuple)에 대해 반복됩니다. 즉, tupleList의 각 Tuple 객체에 대해 위의 추출 작업이 수행되고, 이를 기반으로 BoardListAllDTO 객체가 생성됩니다.
+
+
+                //BoardListAllDTO.builder()와 같은 변환 과정이 반복되는 것은 스트림 API의 map 메서드를 통해 이루어집니다. 이 과정에서 내부적으로 반복이 수행됩니다.
+                BoardListAllDTO dto = BoardListAllDTO.builder()
+                        .bno(board1.getBno())
+                        .title(board1.getTitle())
+                        .writer(board1.getWriter())
+                        .regDate(board1.getRegDate())
+                        .replyCount(replyCount)
+                        .build();
+
+                //BoardImage를 BoardImageDTO 처리할 부분
+                List<BoardImageDTO> imageDTOS = board1.getImageSet().stream().sorted().map(boardImage ->        //sorted() 메서드는 스트림의 요소를 정렬하는 데 사용됩니다. 정렬 기준은 요소의 자연 순서(natural order)에 따라 이루어집니다. 요소의 자연 순서에 따라 오름차순으로 정렬합니다.
+                    BoardImageDTO.builder()
+                            .uuid(boardImage.getUuid())
+                            .fileName(boardImage.getFileName())
+                            .ord(boardImage.getOrd())
+                            .build()
+                ).collect(Collectors.toList());
+
+                dto.setBoardImages(imageDTOS);  //처리된 BoardImageDTO들을 추가
+
+                return dto;
+            }).collect(Collectors.toList());    //스트림에서 처리한 결과를 최종적으로 수집하는 역할
+
+            long totalCount = boardJPQLQuery.fetchCount();
+
+            return new PageImpl<>(dtoList, pageable, totalCount);
+            }
+
 
         //Inner Join : 교집합
         //left join : 왼쪽 기준 전부 select (오른쪽에 없는건 null로 표시)       /     교집합 없이 왼쪽만 보려면 where B.ID(조인한 공통점이라 할 때) IS NULL
