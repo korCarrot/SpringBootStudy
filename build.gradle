@@ -96,6 +96,9 @@ dependencies {
     //thumbnailator
     implementation 'net.coobird:thumbnailator:0.4.16'
 
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
 
 }
 
