@@ -45,12 +45,14 @@
                         <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
                     </div>
 
-                    <div class="my-4">
+                    <!-- 로그인한 유저의 정보를 가져온다 -->
+                    <div class="my-4" th:with="user=${#authentication.principal}">
                         <div class="float-end" th:with="link = ${pageRequestDTO.getLink()}">
                             <a th:href="|@{/board/list}?${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">List</button>
                             </a>
-                            <a th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
+                            <!-- 로그인한 유저의 정보와 작성자의 정보가 같으면 게시글을 수정할 수 있는 버튼이 나타난다. -->
+                            <a th:if="${user != null && user.username == dto.writer}" th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-secondary">Modify</button>
                             </a>
                         </div>
@@ -101,9 +103,9 @@
                             <span class="input-group-text">Reply Text</span>
                             <input type="text" class="form-control replyText" >
                         </div>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" th:with="user=${#authentication.principal}">
                             <span class="input-group-text">Replyer</span>
-                            <input type="text" class="form-control replyer">
+                            <input type="text" class="form-control replyer" th:value="${user.username}" readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -149,6 +151,9 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
+
+    <!-- 자신이 작성한 댓글만 수정/삭제가 가능하도록 사용자의 아이디를 변수로 지정 -->
+    const currentUser = [[${#authentication.principal.username}]]
 
     const bno = [[${dto.bno}]]
 
@@ -284,9 +289,7 @@
     const removeBtn = document.querySelector(".removeBtn")
     const closeModifyBtn = document.querySelector(".closeModifyBtn")
 
-
-    // let hasAuth = false // 댓글의 작성자와 currentUser의 일치 여부
-
+    let hasAuth = false // 댓글의 작성자와 currentUser의 일치 여부
 
     replyList.addEventListener("click", function (e){
 
@@ -312,8 +315,8 @@
             replyHeader.innerHTML = reply.rno  //댓글 번호를 <h5 class="replyHeader"></h5>에 넣는다.
             modifyText.value = reply.replyText
             modifyModal.show()
-
-            // hasAuth = currentUser === reply.replyer //댓글의 작성자와 현재 사용자 일치 여부 확인
+                                                    // JavaScript의 연산자 우선순위에서는 ===가 =보다 더 높은 우선순위
+            hasAuth = currentUser === reply.replyer //댓글의 작성자와 현재 사용자 일치 여부 확인  // 엄격한(strict) 동등 비교를 수행하며, 값 뿐만 아니라 데이터 타입도 비교
 
         }).catch(e => alert('error'))
 
@@ -323,11 +326,11 @@
     //댓글 수정 기능
     modifyBtn.addEventListener("click", function(e) {
 
-    //     // if(!hasAuth){
-    //     //     alert("댓글 작성자만 수정이 가능합니다.")
-    //     //     modifyModal.hide()
-    //     //     return
-    //     // }
+        if(!hasAuth){
+            alert("댓글 작성자만 수정이 가능합니다.")
+            modifyModal.hide()
+            return
+        }
 
 
         const replyObj = {
@@ -358,11 +361,11 @@
     //댓글 삭제 기능
     removeBtn.addEventListener("click", function(e) {
 
-    //     // if(!hasAuth){
-    //     //     alert("댓글 작성자만 삭제가 가능합니다.")
-    //     //     modifyModal.hide()
-    //     //     return
-    //     // }
+        if(!hasAuth){
+            alert("댓글 작성자만 삭제가 가능합니다.")
+            modifyModal.hide()
+            return
+        }
 
 
         removeReply(replyHeader.innerHTML).then(result => {

@@ -79,6 +79,7 @@ public class BoardController {
     }
 
     //게시글 읽기 / 수정하기
+    @PreAuthorize("isAuthenticated()")  //로그인한 사람만 글 조회 가능 -> 로그인이 안되어있다면 로그인 페이지로 이동
     @GetMapping({"/read", "/modify"})
     public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
 
@@ -89,8 +90,10 @@ public class BoardController {
         model.addAttribute("dto", boardDTO);
     }
 
+    //#boardDTO는 컨트롤러의 매개변수를 참조 (ChatGPT)
+    @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/modify")
-    public String modify(PageRequestDTO pageRequestDTO, @Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String modify(@Valid BoardDTO boardDTO, PageRequestDTO pageRequestDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         log.info("board modify post......." + boardDTO);
 
@@ -133,6 +136,8 @@ public class BoardController {
 //
 //    }
 
+    //#boardDTO는 컨트롤러의 매개변수를 참조 (ChatGPT)
+    @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
 
