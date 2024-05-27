@@ -2,6 +2,7 @@ package com.boot.springbootstudy.config;
 
 import com.boot.springbootstudy.security.CustomUserDetailsService;
 import com.boot.springbootstudy.security.handler.Custom403Handler;
+import com.boot.springbootstudy.security.handler.CustomSocialLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -40,6 +42,12 @@ public class CustomSecurityConfig {
 //   HTTP 요청 인증 및 인가: 요청을 인증하고 인가하는 필터를 설정합니다.
 //   로그인/로그아웃: 로그인 페이지, 로그인 처리, 로그아웃 처리 등을 설정합니다.
 //   보안 헤더 설정: XSS, CSRF 등의 공격을 방지하기 위한 보안 헤더를 설정합니다.
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomSocialLoginSuccessHandler(passwordEncoder());
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
 
@@ -60,6 +68,11 @@ public class CustomSecurityConfig {
 
         //403에러 예외 처리 (접근이 거부된 경우이기 때문)
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+
+        //OAuth2 로그인을 사용
+        http.oauth2Login()
+                .loginPage("/member/login")
+                .successHandler(authenticationSuccessHandler());
 
         return http.build();
     }

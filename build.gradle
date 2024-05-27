@@ -101,6 +101,8 @@ dependencies {
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    //Oauth2 소셜 로그인 처리
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 }
 
